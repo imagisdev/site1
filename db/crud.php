@@ -1,7 +1,7 @@
 <?php 
     class crud{
         private $db;
-        private $db_name='site1_db';
+        private $db_name='db8at6ctvuw0ro';
 
         function __construct($conn) {
             $this->db = $conn;
