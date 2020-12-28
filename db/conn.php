@@ -1,6 +1,6 @@
 <?php 
     $host = 'localhost';
-    $db = 'site1_db';
+    $db = 'site1_db'; //Needs to be updated on cron.php as well
     $user = 'root';
     $pass = '';
     $charset = 'utf8mb4';
