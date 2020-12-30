@@ -1,12 +1,21 @@
 <?php 
     $title='Edit Record';
     require_once 'includes/header.php'; 
+    require_once 'includes/auth_check.php';
     require_once 'db/conn.php';
     $result = $crud->getSpecialties();
     if(!isset($_GET['id'])) {
         include 'includes/msgerror.php';
     } else {
-        $record = $crud->viewRecord($_GET['id']);
+        $gid = $_GET['id'];
+        if(substr($gid, 0, 1)=='r') {
+            $gid = substr($gid, 1);
+            $result1 = $crud->getAvatarlink($gid);
+            $avatarFile = $result1['avatar_path'];
+            unlink($avatarFile);
+            $result1 = $crud->deleteAvatar($gid);
+        } 
+        $record = $crud->viewRecord($gid);
 ?>  
 
 <h1 class="text-center">Edit record</h1>
@@ -38,16 +47,23 @@
     <div class="mb-3">
         <label for="email" class="form-label">Email address</label>
         <input name="email" type="email" class="form-control" id="email" aria-describedby="emailHelp" value="<?php echo $record['email']; ?>">
-        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+        <div id="emailHelp" class="form-text" style="font-size:12px;">We'll never share your email with anyone else.</div>
     </div>
     <div class="mb-3">
         <label for="phone" class="form-label">Phone number</label>
         <input name="phone" type="text" class="form-control" id="phone" aria-describedby="phonehelp" value="<?php echo $record['phone']; ?>">
-        <div id="phonehelp" class="form-text">We'll never share your phone number with anyone else.</div>
+        <div id="phonehelp" class="form-text" style="font-size:12px;">We'll never share your phone number with anyone else.</div>
+    </div>
+    <div class="mb-3">
+        <img src="<?php echo empty($record['avatar_path']) ? 'uploads/blank.png' : $record['avatar_path']; ?>" style="width: 50px;">
+        <?php echo empty($record['avatar_path']) ? '' : '<a href="edit.php?id=r' . $record['id'] . '" class="card-link" onClick="return confirm(\'Are you sure you want remove your avatar?\')">Remove Image</a>'; ?>
+        <?php echo '<a href="changeAvatar.php?id=' . $record['id'] . '" class="card-link">Change Image</a>'; ?>
+ 
     </div>
     <div class="d-grid gap-2">
-        <button name="submit" type="submit" class="btn btn-primary btn-block">Save changes</button>
+        <button name="submit" type="submit" class="btn btn-primary">Save changes</button> <a href='viewall.php' class='btn btn-secondary'>Cancel</a>
     </div>
 </form>
 <?php } ?>
+<?php require_once 'includes/submitdisable.php'; ?>
 <?php require_once 'includes/footer.php'; ?> 
